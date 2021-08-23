@@ -1,3 +1,7 @@
+# default JSON
+config/default.json
+
+
 # Logs
 logs
 *.log
