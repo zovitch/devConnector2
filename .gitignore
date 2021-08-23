@@ -1,6 +1,6 @@
 # default JSON
 config/default.json
-
+.DS_Store
 
 # Logs
 logs
