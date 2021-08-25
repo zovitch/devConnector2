@@ -208,7 +208,7 @@ router.put(
 // @desc    Delete experience from profile
 // @access  Private
 
-router.delete('/experience/:edu_id', auth, async (req, res) => {
+router.delete('/experience/:exp_id', auth, async (req, res) => {
   try {
     const profile = await Profile.findOne({ user: req.user.id });
 
@@ -216,6 +216,14 @@ router.delete('/experience/:edu_id', auth, async (req, res) => {
     const removeIndex = profile.experience
       .map((item) => item.id)
       .indexOf(req.params.exp_id);
+
+    // Added in case there is no match found
+    // without it, the splice will delete at index 0
+    if (removeIndex === -1) {
+      return res.status(404).json({
+        error: 'There is no experience with this ID',
+      });
+    }
 
     profile.experience.splice(removeIndex, 1);
 
@@ -277,7 +285,9 @@ router.put(
 // @desc    Delete education from profile
 // @access  Private
 
-router.delete('/education/:exp_id', auth, async (req, res) => {
+// to do: it seems that if we pass a random ID it will delete something from the array same with experience
+
+router.delete('/education/:edu_id', auth, async (req, res) => {
   try {
     const profile = await Profile.findOne({ user: req.user.id });
 
@@ -285,7 +295,14 @@ router.delete('/education/:exp_id', auth, async (req, res) => {
     const removeIndex = profile.education
       .map((item) => item.id)
       .indexOf(req.params.edu_id);
-
+    console.log(removeIndex);
+    // Added in case there is no match found
+    // without it, the splice will delete at index 0
+    if (removeIndex === -1) {
+      return res.status(404).json({
+        error: 'There is no education with this ID',
+      });
+    }
     profile.education.splice(removeIndex, 1);
 
     await profile.save();
@@ -298,3 +315,18 @@ router.delete('/education/:exp_id', auth, async (req, res) => {
 });
 
 module.exports = router;
+
+// I found another solution to removing items since I found Brad's method confusing lol.
+// Basically instead of mapping through the id and index, we find the user by their id , pass the mongoose remove method where we pass what we want to target, in our case the _id of that specific experience/education object and target it by calling the req.params.experience_id and finally saving that profile so the delete goes through. :)
+// // Delete Experience
+// router.delete('/experience/:experience_id', passport.authenticate('jwt', { session: false }), (req, res) => {
+//  Profile
+//  .findOne({ user: req.user.id })
+//  .then(result => {
+//  result.experience.remove({ _id: req.params.experience_id })
+//  result.save()
+//  .then(result => res.json(result.experience))
+//  .catch(err => res.json(err))
+//  })
+//  .catch(err => res.json(err))
+// })
