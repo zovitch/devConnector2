@@ -20,7 +20,7 @@ const PostSchema = new Schema({
   likes: [
     {
       user: {
-        type: Schmea.Types.ObjectId,
+        type: Schema.Types.ObjectId,
         ref: 'users',
       },
     },
