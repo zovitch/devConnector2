@@ -1,0 +1,203 @@
+lesson 40 41
+
+Hi!
+I'm new to Redux, but I found some issues till Lecture 41. what I wanted to fix. Here are the issues I tried to fix. Any improvements are welcome!
+1. Change localStorage to sessionStorage for security issues.
+2. Refactor reducers to be pure functions without side-effect.
+3. Using x-auth-token header only the private server routes.
+
+actions/types.js
+export const SET_ALERT = 'SET_ALERT';
+export const REMOVE_ALERT = 'REMOVE_ALERT';
+export const REGISTER_SUCCESS = 'REGISTER_SUCCESS';
+export const REGISTER_FAIL = 'REGISTER_FAIL';
+export const TOKEN_LOADED = 'TOKEN_LOADED';
+export const USER_LOADED = 'USER_LOADED';
+export const AUTH_ERROR = 'AUTH_ERROR';
+
+reducers/auth.js
+1. Added  TOKEN_LOADED type. Remove all side-effect (localStorage set, get) and make it  pure.
+import {
+  REGISTER_SUCCESS,
+  REGISTER_FAIL,
+  USER_LOADED,
+  AUTH_ERROR,
+  TOKEN_LOADED
+} from '../actions/types';
+ 
+const initialState = {
+  token: null,
+  isAuthenticated: false,
+  loading: true,
+  user: null
+};
+ 
+export default (state = initialState, action) => {
+  const { type, payload } = action;
+  switch (type) {
+    case TOKEN_LOADED:
+      return {
+        ...state,
+        token: payload
+      }
+    case USER_LOADED:
+      return {
+        ...state,
+        isAuthenticated: true,
+        loading: false,
+        user: payload
+      }
+    case REGISTER_SUCCESS:
+      return {
+        ...state,
+        token: payload.token,
+        isAuthenticated: true,
+        loading: false
+      }
+    case REGISTER_FAIL:
+    case AUTH_ERROR:
+      return {
+        ...state,
+        token: null,
+        isAuthenticated: false,
+        loading: false
+      }
+    default:
+      return state;
+  }
+}
+
+actions/auth.js
+1. Add loadToken action. Set token in state according to sessionStorage.
+2.  Completely get rid of setAuthToken method. I used makeAuthTokenHeader instead and used only in private routes.
+3. When registering we dispatch REGISTER_SUCCESS and loadUser also, to loading user to state .
+4. makeAuthTokenHeader using the token value in state. (not sessionStorage)
+import axios from 'axios';
+import { setAlert } from './alert';
+import {
+  REGISTER_SUCCESS,
+  REGISTER_FAIL,
+  USER_LOADED,
+  AUTH_ERROR,
+  TOKEN_LOADED
+} from './types';
+import makeAuthTokenHeader from '../utils/makeAuthTokenHeader';
+ 
+ 
+export const loadToken = () => async dispatch => {
+  if (sessionStorage.token) {
+    return dispatch({
+      type: TOKEN_LOADED,
+      payload: sessionStorage.getItem('token')
+    })
+  } else {
+    dispatch({
+      type: AUTH_ERROR
+    })
+  }
+}
+ 
+// Load user
+export const loadUser = () => async (dispatch, getStore) => {
+ 
+  try {
+    const header = makeAuthTokenHeader(getStore().auth.token);
+    const res = await axios.get('/api/auth', header);
+ 
+    dispatch({
+      type: USER_LOADED,
+      payload: res.data
+    });
+  } catch (err) {
+    dispatch({
+      type: AUTH_ERROR
+    });
+  }
+}
+ 
+// Register user
+export const register = ({ name, email, password }) => async dispatch => {
+  const config = {
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  }
+ 
+  const body = JSON.stringify({ name, email, password });
+  try {
+    const res = await axios.post('/api/users', body, config);
+    sessionStorage.setItem('token', res.data.token);
+    dispatch({
+      type: REGISTER_SUCCESS,
+      payload: res.data
+    })
+    dispatch(loadUser())
+  } catch (err) {
+    const errors = err.response.data.errors;
+    if (errors) {
+      errors.forEach(error => dispatch(setAlert(error.msg, 'danger')));
+    }
+    sessionStorage.removeItem('token');
+    dispatch({
+      type: REGISTER_FAIL
+    });
+  }
+}
+
+App.js
+1. Remove setAuthToken. Only the private routes require x-auth-token header.
+2. Dispatch loadToken before loadUser. If token is not in the sessionStorage, getting an AUTH_ERROR.
+import React, { Fragment, useEffect } from 'react';
+import './App.css';
+import Landing from './components/layout/Landing';
+import Navbar from './components/layout/Navbar';
+import Alert from './components/layout/Alert';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import Login from './components/auth/Login';
+import Register from './components/auth/Register';
+// Redux
+import { Provider } from 'react-redux';
+import store from './store';
+import { loadUser, loadToken } from './actions/auth';
+ 
+function App() {
+ 
+  useEffect(() => {
+    store.dispatch(loadToken());
+    store.dispatch(loadUser());
+  }, []);
+ 
+  return (
+    <Provider store={store}>
+      <Router>
+        <Fragment>
+          <Navbar />
+          <Route exact path='/' component={Landing} />
+          <section className="container">
+            <Alert />
+            <Switch>
+              <Route exact path='/register' component={Register} />
+              <Route exact path='/login' component={Login} />
+            </Switch>
+          </section>
+        </Fragment>
+      </Router>
+    </Provider>);
+}
+ 
+export default App;
+
+utils/makeAuthHeader.js
+const makeAuthTokenHeader = token => {
+  if (token) {
+    return {
+      headers: {
+        'x-auth-token': token
+      }
+    }
+  } else {
+    throw new Error('Token is missing.');
+  }
+}
+ 
+export default makeAuthTokenHeader;
