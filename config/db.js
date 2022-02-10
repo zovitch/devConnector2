@@ -7,13 +7,13 @@ const connectDB = async () => {
   try {
     await mongoose.connect(db, {
       useNewUrlParser: true,
-      useCreateIndex: true,
+      // useCreateIndex: true, //not supported with mongoose 6.0.1
       useUnifiedTopology: true,
-      useFindAndModify: false,
+      // useFindAndModify: false, //not supported with mongoose 6.0.1
     });
     console.log('MongoDB connected...');
   } catch (err) {
-    console.log('error to catch');
+    console.log('error to catch | cannot connect to MongoDB');
     console.log(err.message);
     // Exit process with failure
     process.exit(1);
