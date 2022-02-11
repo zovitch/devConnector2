@@ -2,6 +2,9 @@
 config/default.json
 .DS_Store
 
+# ressources 
+_resources
+
 # Logs
 logs
 *.log
