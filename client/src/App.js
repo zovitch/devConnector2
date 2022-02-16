@@ -55,7 +55,7 @@ const App = () => {
                 exact
                 path='/add-experience'
                 component={AddExperience}
-              />{' '}
+              />
               <PrivateRoute
                 exact
                 path='/add-education'
