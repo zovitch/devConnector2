@@ -8,7 +8,7 @@ const Experience = ({ experience }) => {
     <tr key={exp._id}>
       <td>{exp.company}</td>
       <td className='hide-sm'>{exp.title}</td>
-      <td>
+      <td className='hide-sm'>
         <Moment format='YYYY/MM/DD'>{exp.from}</Moment> -{' '}
         {exp.to === null ? (
           ' Now'

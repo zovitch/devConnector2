@@ -29,7 +29,7 @@ const Dashboard = ({
         <Fragment>
           <DashboardActions />
           {profile.experience && <Experience experience={profile.experience} />}
-          {/* {profile.education && <Education experience={profile.education} />} */}
+          {profile.education && <Education education={profile.education} />}
         </Fragment>
       ) : (
         <Fragment>
