@@ -97,7 +97,9 @@ router.post(
     if (linkedin)
       profileFields.social.linkedin = normalize(linkedin, { forceHttps: true });
     if (instagram)
-      profileFields.social.instagram = normalize(company, { forceHttps: true });
+      profileFields.social.instagram = normalize(instagram, {
+        forceHttps: true,
+      });
 
     try {
       let profile = await Profile.findOne({ user: req.user.id });
