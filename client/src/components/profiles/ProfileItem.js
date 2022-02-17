@@ -1,4 +1,5 @@
 import React from 'react';
+import Avatar from 'react-avatar';
 import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
 
@@ -13,7 +14,8 @@ const ProfileItem = ({
 }) => {
   return (
     <div className='profile bg-light'>
-      <img src={avatar} alt='' className='round-img' />
+      {/* <img src={avatar} alt='' className='round-img' /> */}
+      <Avatar name={name} round={true}></Avatar>
       <div>
         <h2>{name}</h2>
         <p>

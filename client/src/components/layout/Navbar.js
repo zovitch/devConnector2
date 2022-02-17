@@ -1,5 +1,6 @@
 import React, { Fragment } from 'react';
 import { Link } from 'react-router-dom';
+// import Avatar from 'react-avatar';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { logout } from '../../actions/auth';
@@ -22,6 +23,9 @@ const Navbar = ({ auth: { isAuthenticated, loading, user }, logout }) => {
           <span className='hide-sm'>Logout</span>
         </a>
       </li>
+      {/* <li>
+        <Avatar name={user.name} size='22' textSizeRatio='1' round={true} />
+      </li> */}
     </ul>
   );
 

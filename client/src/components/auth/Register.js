@@ -85,6 +85,7 @@ const Register = ({ setAlert, register, isAuthenticated }) => {
           <small className='form-text'>
             This site uses Gravatar so if you want a profile image, use a
             Gravatar email
+            {/* TODO: remove this line later */}
           </small>
         </div>
         <div className='form-group'>
