@@ -4,6 +4,8 @@ const config = require('config');
 const router = express.Router();
 const auth = require('../../middleware/auth');
 const { check, validationResult } = require('express-validator');
+// bring in normalize to give us a proper url, regardless of what user entered
+const normalize = require('normalize-url');
 
 const Profile = require('../../models/Profile');
 const User = require('../../models/User');
@@ -70,7 +72,8 @@ router.post(
     profileFields.user = req.user.id;
 
     if (company) profileFields.company = company;
-    if (website) profileFields.website = website;
+    if (website)
+      profileFields.website = normalize(website, { forceHttps: true });
     if (location) profileFields.location = location;
     if (bio) profileFields.bio = bio;
     if (status) profileFields.status = status;
@@ -85,11 +88,16 @@ router.post(
     // Build social object
     profileFields.social = {};
 
-    if (youtube) profileFields.social.youtube = youtube;
-    if (twitter) profileFields.social.twitter = twitter;
-    if (facebook) profileFields.social.facebook = facebook;
-    if (linkedin) profileFields.social.linkedin = linkedin;
-    if (instagram) profileFields.social.instagram = company;
+    if (youtube)
+      profileFields.social.youtube = normalize(youtube, { forceHttps: true });
+    if (twitter)
+      profileFields.social.twitter = normalize(twitter, { forceHttps: true });
+    if (facebook)
+      profileFields.social.facebook = normalize(facebook, { forceHttps: true });
+    if (linkedin)
+      profileFields.social.linkedin = normalize(linkedin, { forceHttps: true });
+    if (instagram)
+      profileFields.social.instagram = normalize(company, { forceHttps: true });
 
     try {
       let profile = await Profile.findOne({ user: req.user.id });
