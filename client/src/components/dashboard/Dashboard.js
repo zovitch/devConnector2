@@ -8,6 +8,14 @@ import Experience from './Experience';
 import Education from './Education';
 import Spinner from '../layout/Spinner';
 
+// Check if user hit back button from an unauthenticated state and force reload to update browser cache
+const perfEntries = performance.getEntriesByType('navigation');
+if (perfEntries.length && perfEntries[0].type === 'back_forward') {
+  if (localStorage.getItem('token') === null) {
+    window.location.reload();
+  }
+}
+
 const Dashboard = ({
   getCurrentProfile,
   deleteAccount,
