@@ -1,13 +1,10 @@
 # default JSON
 config/default.json
 config/production.json
-package-lock.json
-./client/package-lock.json
 
-.DS_Store
 
-# ressources 
-_resources
+.DS_*
+
 
 # Logs
 logs
@@ -113,4 +110,4 @@ dist
 
 # TernJS port file
 .tern-port
-.DS_Store
+
