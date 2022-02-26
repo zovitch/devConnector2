@@ -1,4 +1,4 @@
-import api from 'api';
+import api from './api';
 
 // store our JWT in LS and set axios headers if we do have a token
 

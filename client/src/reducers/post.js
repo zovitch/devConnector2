@@ -1,10 +1,10 @@
 import {
   GET_POSTS,
-  GET_POST,
   POST_ERROR,
   UPDATE_LIKES,
   DELETE_POST,
   ADD_POST,
+  GET_POST,
   ADD_COMMENT,
   REMOVE_COMMENT,
 } from '../actions/types';
@@ -16,8 +16,7 @@ const initialState = {
   error: {},
 };
 
-// eslint-disable-next-line import/no-anonymous-default-export
-export default function (state = initialState, action) {
+function postReducer(state = initialState, action) {
   const { type, payload } = action;
 
   switch (type) {
@@ -55,7 +54,7 @@ export default function (state = initialState, action) {
       return {
         ...state,
         posts: state.posts.map((post) =>
-          post._id === payload.postId ? { ...post, likes: payload.likes } : post
+          post._id === payload.id ? { ...post, likes: payload.likes } : post
         ),
         loading: false,
       };
@@ -80,3 +79,5 @@ export default function (state = initialState, action) {
       return state;
   }
 }
+
+export default postReducer;

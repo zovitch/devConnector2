@@ -1,4 +1,4 @@
-import api from 'api';
+import api from '../utils/api';
 import { setAlert } from './alert';
 import {
   GET_POSTS,
@@ -127,7 +127,7 @@ export const getPost = (id) => async (dispatch) => {
 // Add Comment
 export const addComment = (postId, formData) => async (dispatch) => {
   try {
-    const res = await api.post(`/posts/comment/${id}`, formData);
+    const res = await api.post(`/posts/comment/${postId}`, formData);
 
     dispatch({
       type: ADD_COMMENT,
