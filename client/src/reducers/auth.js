@@ -1,10 +1,10 @@
 import {
   REGISTER_SUCCESS,
-  // REGISTER_FAIL,
+  //REGISTER_FAIL,
   USER_LOADED,
   AUTH_ERROR,
   LOGIN_SUCCESS,
-  // LOGIN_FAIL,
+  //LOGIN_FAIL,
   LOGOUT,
   ACCOUNT_DELETED,
 } from '../actions/types';
@@ -49,4 +49,5 @@ function authReducer(state = initialState, action) {
       return state;
   }
 }
+
 export default authReducer;

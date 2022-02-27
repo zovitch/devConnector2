@@ -1,5 +1,6 @@
 import api from '../utils/api';
 import { setAlert } from './alert';
+
 import {
   GET_PROFILE,
   GET_PROFILES,
@@ -71,7 +72,7 @@ export const getProfileById = (userId) => async (dispatch) => {
   }
 };
 
-// Get GitHub repos
+// Get Github repos
 export const getGithubRepos = (username) => async (dispatch) => {
   try {
     const res = await api.get(`/profile/github/${username}`);
@@ -87,9 +88,9 @@ export const getGithubRepos = (username) => async (dispatch) => {
   }
 };
 
-// Create or Update profile
+// Create or update profile
 export const createProfile =
-  (formData, history, edit = false) =>
+  (formData, navigate, edit = false) =>
   async (dispatch) => {
     try {
       const res = await api.post('/profile', formData);
@@ -100,11 +101,11 @@ export const createProfile =
       });
 
       dispatch(
-        setAlert(edit ? 'Profile Update' : ' Profile Created', 'success')
+        setAlert(edit ? 'Profile Updated' : 'Profile Created', 'success')
       );
 
       if (!edit) {
-        history.push('/dashboard');
+        navigate('/dashboard');
       }
     } catch (err) {
       const errors = err.response.data.errors;
@@ -121,7 +122,7 @@ export const createProfile =
   };
 
 // Add Experience
-export const addExperience = (formData, history) => async (dispatch) => {
+export const addExperience = (formData, navigate) => async (dispatch) => {
   try {
     const res = await api.put('/profile/experience', formData);
 
@@ -132,7 +133,7 @@ export const addExperience = (formData, history) => async (dispatch) => {
 
     dispatch(setAlert('Experience Added', 'success'));
 
-    history.push('/dashboard');
+    navigate('/dashboard');
   } catch (err) {
     const errors = err.response.data.errors;
 
@@ -148,7 +149,7 @@ export const addExperience = (formData, history) => async (dispatch) => {
 };
 
 // Add Education
-export const addEducation = (formData, history) => async (dispatch) => {
+export const addEducation = (formData, navigate) => async (dispatch) => {
   try {
     const res = await api.put('/profile/education', formData);
 
@@ -159,7 +160,7 @@ export const addEducation = (formData, history) => async (dispatch) => {
 
     dispatch(setAlert('Education Added', 'success'));
 
-    history.push('/dashboard');
+    navigate('/dashboard');
   } catch (err) {
     const errors = err.response.data.errors;
 
@@ -174,7 +175,7 @@ export const addEducation = (formData, history) => async (dispatch) => {
   }
 };
 
-// Delete an experience
+// Delete experience
 export const deleteExperience = (id) => async (dispatch) => {
   try {
     const res = await api.delete(`/profile/experience/${id}`);
@@ -183,6 +184,7 @@ export const deleteExperience = (id) => async (dispatch) => {
       type: UPDATE_PROFILE,
       payload: res.data,
     });
+
     dispatch(setAlert('Experience Removed', 'success'));
   } catch (err) {
     dispatch({
@@ -192,7 +194,7 @@ export const deleteExperience = (id) => async (dispatch) => {
   }
 };
 
-// Delete an education
+// Delete education
 export const deleteEducation = (id) => async (dispatch) => {
   try {
     const res = await api.delete(`/profile/education/${id}`);
@@ -201,6 +203,7 @@ export const deleteEducation = (id) => async (dispatch) => {
       type: UPDATE_PROFILE,
       payload: res.data,
     });
+
     dispatch(setAlert('Education Removed', 'success'));
   } catch (err) {
     dispatch({
@@ -210,16 +213,16 @@ export const deleteEducation = (id) => async (dispatch) => {
   }
 };
 
-// Delete account and profile
+// Delete account & profile
 export const deleteAccount = () => async (dispatch) => {
-  if (window.confirm('Are you sure? This cannot be undone!')) {
+  if (window.confirm('Are you sure? This can NOT be undone!')) {
     try {
       await api.delete('/profile');
 
       dispatch({ type: CLEAR_PROFILE });
       dispatch({ type: ACCOUNT_DELETED });
 
-      dispatch(setAlert('Your account has been permanentaly deleted'));
+      dispatch(setAlert('Your account has been permanently deleted'));
     } catch (err) {
       dispatch({
         type: PROFILE_ERROR,

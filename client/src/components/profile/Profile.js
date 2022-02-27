@@ -1,6 +1,6 @@
 import React, { Fragment, useEffect } from 'react';
-import { Link } from 'react-router-dom';
 import PropTypes from 'prop-types';
+import { Link, useParams } from 'react-router-dom';
 import { connect } from 'react-redux';
 import Spinner from '../layout/Spinner';
 import ProfileTop from './ProfileTop';
@@ -10,19 +10,15 @@ import ProfileEducation from './ProfileEducation';
 import ProfileGithub from './ProfileGithub';
 import { getProfileById } from '../../actions/profile';
 
-const Profile = ({
-  getProfileById,
-  profile: { profile, loading },
-  auth,
-  match,
-}) => {
+const Profile = ({ getProfileById, profile: { profile }, auth }) => {
+  const { id } = useParams();
   useEffect(() => {
-    getProfileById(match.params.id);
-  }, [getProfileById, match.params.id]);
+    getProfileById(id);
+  }, [getProfileById, id]);
 
   return (
-    <Fragment>
-      {profile === null || loading ? (
+    <section className='container'>
+      {profile === null ? (
         <Spinner />
       ) : (
         <Fragment>
@@ -36,8 +32,7 @@ const Profile = ({
                 Edit Profile
               </Link>
             )}
-
-          <div className='class profile-grid my-1'>
+          <div className='profile-grid my-1'>
             <ProfileTop profile={profile} />
             <ProfileAbout profile={profile} />
             <div className='profile-exp bg-white p-2'>
@@ -55,6 +50,7 @@ const Profile = ({
                 <h4>No experience credentials</h4>
               )}
             </div>
+
             <div className='profile-edu bg-white p-2'>
               <h2 className='text-primary'>Education</h2>
               {profile.education.length > 0 ? (
@@ -70,13 +66,14 @@ const Profile = ({
                 <h4>No education credentials</h4>
               )}
             </div>
+
             {profile.githubusername && (
               <ProfileGithub username={profile.githubusername} />
             )}
           </div>
         </Fragment>
       )}
-    </Fragment>
+    </section>
   );
 };
 

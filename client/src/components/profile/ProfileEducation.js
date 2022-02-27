@@ -12,12 +12,12 @@ const ProfileEducation = ({
     </p>
     <p>
       <strong>Degree: </strong> {degree}
-    </p>{' '}
+    </p>
     <p>
       <strong>Field of Study: </strong> {fieldofstudy}
-    </p>{' '}
+    </p>
     <p>
-      <strong>Descripton: </strong> {description}
+      <strong>Description: </strong> {description}
     </p>
   </div>
 );

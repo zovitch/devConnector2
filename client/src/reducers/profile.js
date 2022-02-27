@@ -37,8 +37,14 @@ function profileReducer(state = initialState, action) {
       return {
         ...state,
         error: payload,
-        profile: null,
         loading: false,
+        profile: null,
+      };
+    case CLEAR_PROFILE:
+      return {
+        ...state,
+        profile: null,
+        repos: [],
       };
     case GET_REPOS:
       return {
@@ -49,15 +55,7 @@ function profileReducer(state = initialState, action) {
     case NO_REPOS:
       return {
         ...state,
-        repos: payload,
-        loading: false,
-      };
-    case CLEAR_PROFILE:
-      return {
-        ...state,
-        profile: null,
         repos: [],
-        loading: false,
       };
     default:
       return state;
