@@ -1,6 +1,7 @@
 # default JSON
 config/default.json
-.DS_Store
+config/production.json
+.DS_*
 
 # ressources 
 _resources
@@ -109,4 +110,3 @@ dist
 
 # TernJS port file
 .tern-port
-.DS_Store
